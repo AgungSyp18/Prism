@@ -21,14 +21,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect authenticated user away from /login
-  if (pathname === "/login") {
-    if (session) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-    return NextResponse.next();
-  }
-
   // Protected application pages
   const protectedPages = ["/dashboard", "/items", "/borrow", "/returns", "/transactions", "/users"];
   const isProtectedPage = protectedPages.some((p) => pathname.startsWith(p));
@@ -65,7 +57,6 @@ export const config = {
     "/returns/:path*",
     "/transactions/:path*",
     "/users/:path*",
-    "/login",
     "/api/users/:path*",
     "/api/items/:path*",
     "/api/borrow/:path*",

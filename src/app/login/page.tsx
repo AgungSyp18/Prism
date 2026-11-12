@@ -1,8 +1,22 @@
+import { getCurrentUser, COOKIE_NAME } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import LoginForm from "./LoginForm";
 
 export const dynamic = "force-dynamic";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const user = await getCurrentUser();
+  if (user) {
+    redirect("/dashboard");
+  }
+
+  // Clear any invalid or stale session cookie
+  const cookieStore = await cookies();
+  if (cookieStore.has(COOKIE_NAME)) {
+    cookieStore.delete(COOKIE_NAME);
+  }
+
   const demoAdmin = {
     username: process.env.DEMO_ADMIN_USERNAME || "admin",
     password: process.env.DEMO_ADMIN_PASSWORD || "admin123",
