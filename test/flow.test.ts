@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { PrismaClient, Role, TransactionStatus } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 import { signToken, verifyToken } from "../src/lib/auth";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL || "" });
+const prisma = new PrismaClient({ adapter });
 
 async function runTests() {
   console.log("🚀 Starting System Verification Tests...\n");
