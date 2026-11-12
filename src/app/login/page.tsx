@@ -10,18 +10,6 @@ export default async function LoginPage() {
     redirect("/dashboard");
   }
 
-  const sanitize = (val?: string) => (val || "").replace(/^["']|["']$/g, "").trim();
-
-  const demoAdmin = {
-    username: sanitize(process.env.DEMO_ADMIN_USERNAME) || "admin",
-    password: sanitize(process.env.DEMO_ADMIN_PASSWORD) || "admin123",
-  };
-
-  const demoStaff = {
-    username: sanitize(process.env.DEMO_STAFF_USERNAME) || "staff",
-    password: sanitize(process.env.DEMO_STAFF_PASSWORD) || "staff123",
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
@@ -39,7 +27,7 @@ export default async function LoginPage() {
         </div>
 
         {/* Client Form */}
-        <LoginForm demoAdmin={demoAdmin} demoStaff={demoStaff} />
+        <LoginForm />
 
         <p className="text-center text-xs text-slate-500 mt-6">
           Coding Talent Challenge • Public Deployment

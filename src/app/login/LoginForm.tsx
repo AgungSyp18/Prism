@@ -2,26 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogIn, ShieldCheck, UserCheck, AlertCircle, KeyRound, User, Eye, EyeOff } from "lucide-react";
+import { LogIn, AlertCircle, KeyRound, User, Eye, EyeOff } from "lucide-react";
 
-interface LoginFormProps {
-  demoAdmin: { username: string; password: string };
-  demoStaff: { username: string; password: string };
-}
-
-export default function LoginForm({ demoAdmin, demoStaff }: LoginFormProps) {
+export default function LoginForm() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const fillCredentials = (u: string, p: string) => {
-    setUsername(u);
-    setPassword(p);
-    setError("");
-  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,34 +109,6 @@ export default function LoginForm({ demoAdmin, demoStaff }: LoginFormProps) {
           <span>{loading ? "Memproses Masuk..." : "Masuk Sistem"}</span>
         </button>
       </form>
-
-      {/* Quick Demo Credentials configured from environment */}
-      <div className="mt-6 pt-5 border-t border-slate-100">
-        <p className="text-xs font-medium text-slate-500 text-center mb-3">
-          Akun Pengujian Demo (Klik untuk mengisi cepat):
-        </p>
-        <div className="grid grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            onClick={() => fillCredentials(demoAdmin.username, demoAdmin.password)}
-            className="flex items-center justify-center space-x-1.5 p-2.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl text-xs font-semibold text-purple-700 transition"
-          >
-            <ShieldCheck className="w-4 h-4 text-purple-600" />
-            <span>Admin Lab</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => fillCredentials(demoStaff.username, demoStaff.password)}
-            className="flex items-center justify-center space-x-1.5 p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-semibold text-emerald-700 transition"
-          >
-            <UserCheck className="w-4 h-4 text-emerald-600" />
-            <span>Staff Lab</span>
-          </button>
-        </div>
-        <div className="mt-3 text-[11px] text-slate-400 text-center font-mono">
-          {demoAdmin.username} / {demoAdmin.password} • {demoStaff.username} / {demoStaff.password}
-        </div>
-      </div>
     </div>
   );
 }
