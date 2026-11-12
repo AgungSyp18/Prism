@@ -60,9 +60,9 @@ CREATE TABLE IF NOT EXISTS "borrow_transactions" (
 -- staff -> staff123
 INSERT INTO "users" ("id", "username", "password", "name", "role", "isActive", "createdAt", "updatedAt")
 VALUES 
-    ('user_admin_01', 'admin', '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.Uom8z9x2a4t0eM0y55fI8R3H5d6Uf0a', 'Administrator Lab', 'ADMIN', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('user_staff_01', 'staff', '$2a$10$4n9UoB9Xy8K8O6m1XlqAfeJ3LqJt5Z4V8K3p7Y4W5L9O1Q2Z3X4Y5', 'Staff Petugas Lab', 'STAFF', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-ON CONFLICT ("username") DO NOTHING;
+    ('user_admin_01', 'admin', '$2a$10$Ph7X6H1CgfL0cJAa2HVyV.NeJA.WObj00JRCaN6FIsFqV1RWyPg36', 'Administrator Lab', 'ADMIN', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('user_staff_01', 'staff', '$2a$10$cBX3aYvkwOZuQ7jQI.oeCuvgFJxs2VbOtJmjS9NCAqz8eKnNPTU/S', 'Staff Petugas Lab', 'STAFF', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+ON CONFLICT ("username") DO UPDATE SET "password" = EXCLUDED."password", "isActive" = true;
 
 INSERT INTO "items" ("id", "code", "name", "category", "stock", "createdAt", "updatedAt")
 VALUES

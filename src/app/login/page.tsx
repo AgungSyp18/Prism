@@ -10,14 +10,16 @@ export default async function LoginPage() {
     redirect("/dashboard");
   }
 
+  const sanitize = (val?: string) => (val || "").replace(/^["']|["']$/g, "").trim();
+
   const demoAdmin = {
-    username: process.env.DEMO_ADMIN_USERNAME || "admin",
-    password: process.env.DEMO_ADMIN_PASSWORD || "admin123",
+    username: sanitize(process.env.DEMO_ADMIN_USERNAME) || "admin",
+    password: sanitize(process.env.DEMO_ADMIN_PASSWORD) || "admin123",
   };
 
   const demoStaff = {
-    username: process.env.DEMO_STAFF_USERNAME || "staff",
-    password: process.env.DEMO_STAFF_PASSWORD || "staff123",
+    username: sanitize(process.env.DEMO_STAFF_USERNAME) || "staff",
+    password: sanitize(process.env.DEMO_STAFF_PASSWORD) || "staff123",
   };
 
   return (
