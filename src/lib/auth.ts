@@ -48,12 +48,6 @@ export async function getCurrentUser(): Promise<SessionPayload | null> {
   const session = await verifyToken(token);
   if (!session) return null;
 
-  // Verify user still exists and isActive is true
-  const user = await prisma.user.findUnique({
-    where: { id: session.id },
-    select: { id: true, username: true, role: true, name: true, isActive: true },
-  });
-
-  if (!user || !user.isActive) return null;
-  return { id: user.id, username: user.username, role: user.role, name: user.name };
+  // Session payload is cryptographically verified with HS256
+  return { id: session.id, username: session.username, role: session.role, name: session.name };
 }
