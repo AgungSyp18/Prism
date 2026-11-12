@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { getCurrentUser, COOKIE_NAME } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import Navbar from "@/components/Navbar";
 import {
@@ -19,10 +18,6 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) {
-    const cookieStore = await cookies();
-    if (cookieStore.has(COOKIE_NAME)) {
-      cookieStore.delete(COOKIE_NAME);
-    }
     redirect("/login");
   }
 

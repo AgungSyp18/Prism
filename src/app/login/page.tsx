@@ -1,5 +1,4 @@
-import { getCurrentUser, COOKIE_NAME } from "@/lib/auth";
-import { cookies } from "next/headers";
+import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import LoginForm from "./LoginForm";
 
@@ -9,12 +8,6 @@ export default async function LoginPage() {
   const user = await getCurrentUser();
   if (user) {
     redirect("/dashboard");
-  }
-
-  // Clear any invalid or stale session cookie
-  const cookieStore = await cookies();
-  if (cookieStore.has(COOKIE_NAME)) {
-    cookieStore.delete(COOKIE_NAME);
   }
 
   const demoAdmin = {

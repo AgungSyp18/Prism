@@ -27,7 +27,11 @@ export async function middleware(request: NextRequest) {
 
   if (isProtectedPage) {
     if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      if (token) {
+        response.cookies.delete(COOKIE_NAME);
+      }
+      return response;
     }
 
     // Admin only pages
