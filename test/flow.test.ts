@@ -21,17 +21,22 @@ async function runTests() {
 
     // 2. Verify Authentication & Role Credentials
     console.log("Checking authentication and role enforcement...");
-    const admin = await prisma.user.findUnique({ where: { username: "admin" } });
-    assert.ok(admin, "Admin user must exist");
-    assert.equal(admin.role, Role.ADMIN);
-    const adminPassMatch = await bcrypt.compare("admin123", admin.password);
-    assert.ok(adminPassMatch, "Admin password hash must match 'admin123'");
+    const adminUser = process.env.DEMO_ADMIN_USERNAME || "admin";
+    const adminPass = process.env.DEMO_ADMIN_PASSWORD || "admin123";
+    const staffUser = process.env.DEMO_STAFF_USERNAME || "staff";
+    const staffPass = process.env.DEMO_STAFF_PASSWORD || "staff123";
 
-    const staff = await prisma.user.findUnique({ where: { username: "staff" } });
-    assert.ok(staff, "Staff user must exist");
+    const admin = await prisma.user.findUnique({ where: { username: adminUser } });
+    assert.ok(admin, `Admin user (${adminUser}) must exist`);
+    assert.equal(admin.role, Role.ADMIN);
+    const adminPassMatch = await bcrypt.compare(adminPass, admin.password);
+    assert.ok(adminPassMatch, `Admin password hash must match configured password`);
+
+    const staff = await prisma.user.findUnique({ where: { username: staffUser } });
+    assert.ok(staff, `Staff user (${staffUser}) must exist`);
     assert.equal(staff.role, Role.STAFF);
-    const staffPassMatch = await bcrypt.compare("staff123", staff.password);
-    assert.ok(staffPassMatch, "Staff password hash must match 'staff123'");
+    const staffPassMatch = await bcrypt.compare(staffPass, staff.password);
+    assert.ok(staffPassMatch, `Staff password hash must match configured password`);
     console.log("✅ Admin and Staff authentication verified.\n");
 
     // 3. Test Borrowing Flow & Stock Decrement

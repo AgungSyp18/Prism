@@ -6,15 +6,20 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database...");
 
-  // 1. Seed Users (Admin & Staff)
-  const adminPassword = await bcrypt.hash("admin123", 10);
-  const staffPassword = await bcrypt.hash("staff123", 10);
+  // 1. Seed Users (Admin & Staff from environment variables)
+  const adminUsername = process.env.DEMO_ADMIN_USERNAME || "admin";
+  const adminPasswordPlain = process.env.DEMO_ADMIN_PASSWORD || "admin123";
+  const staffUsername = process.env.DEMO_STAFF_USERNAME || "staff";
+  const staffPasswordPlain = process.env.DEMO_STAFF_PASSWORD || "staff123";
+
+  const adminPassword = await bcrypt.hash(adminPasswordPlain, 10);
+  const staffPassword = await bcrypt.hash(staffPasswordPlain, 10);
 
   const admin = await prisma.user.upsert({
-    where: { username: "admin" },
-    update: { isActive: true },
+    where: { username: adminUsername },
+    update: { isActive: true, password: adminPassword },
     create: {
-      username: "admin",
+      username: adminUsername,
       password: adminPassword,
       name: "Administrator Lab",
       role: Role.ADMIN,
@@ -23,10 +28,10 @@ async function main() {
   });
 
   const staff = await prisma.user.upsert({
-    where: { username: "staff" },
-    update: { isActive: true },
+    where: { username: staffUsername },
+    update: { isActive: true, password: staffPassword },
     create: {
-      username: "staff",
+      username: staffUsername,
       password: staffPassword,
       name: "Staff Petugas Lab",
       role: Role.STAFF,

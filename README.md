@@ -64,6 +64,9 @@ Data awal barang telah disediakan dan terisi secara otomatis:
    cp .env.example .env
    ```
    Atur `DATABASE_URL` ke database PostgreSQL Anda (atau Supabase).
+   Anda juga dapat mengubah kredensial akun bawaan melalui:
+   - `DEMO_ADMIN_USERNAME` & `DEMO_ADMIN_PASSWORD`
+   - `DEMO_STAFF_USERNAME` & `DEMO_STAFF_PASSWORD`
 
 3. **Sinkronisasi Skema & Data Awal (Seed)**:
    ```bash
