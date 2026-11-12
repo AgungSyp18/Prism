@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
@@ -91,28 +92,37 @@ export default async function DashboardPage() {
 
           {/* Quick Action Buttons */}
           <div className="flex flex-wrap items-center gap-2.5">
-            <a
+            <Link
               href="/borrow"
               className="inline-flex items-center space-x-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-sm transition"
             >
               <HandHelping className="w-4 h-4" />
               <span>Peminjaman Baru</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/returns"
               className="inline-flex items-center space-x-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Pengembalian</span>
-            </a>
+            </Link>
             {user.role === "ADMIN" && (
-              <a
-                href="/items"
-                className="inline-flex items-center space-x-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium shadow-sm transition"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>Tambah Barang</span>
-              </a>
+              <>
+                <Link
+                  href="/items"
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium shadow-sm transition"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Kelola Barang</span>
+                </Link>
+                <Link
+                  href="/users"
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-medium shadow-sm transition"
+                >
+                  <Users className="w-4 h-4" />
+                  <span>Kelola Pengguna</span>
+                </Link>
+              </>
             )}
           </div>
         </div>
@@ -191,12 +201,12 @@ export default async function DashboardPage() {
                 Daftar transaksi peminjaman dan pengembalian barang terbaru
               </p>
             </div>
-            <a
+            <Link
               href="/transactions"
               className="text-xs font-semibold text-blue-600 hover:text-blue-700"
             >
               Lihat Semua &rarr;
-            </a>
+            </Link>
           </div>
 
           {recentTransactions.length === 0 ? (
