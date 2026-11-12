@@ -41,8 +41,7 @@ export default function LoginForm({ demoAdmin, demoStaff }: LoginFormProps) {
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      window.location.href = "/dashboard";
     } catch {
       setError("Terjadi kesalahan jaringan. Coba lagi.");
       setLoading(false);

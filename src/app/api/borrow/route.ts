@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -75,6 +76,8 @@ export async function POST(request: Request) {
 
       return { transaction, updatedItem };
     });
+
+    revalidatePath("/dashboard");
 
     return NextResponse.json(
       {

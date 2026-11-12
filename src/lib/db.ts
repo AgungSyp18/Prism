@@ -9,13 +9,20 @@ const globalForPrisma = globalThis as unknown as {
 
 function getPool(): Pool {
   if (globalForPrisma.pool) return globalForPrisma.pool;
+
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    min: 2,
     max: 10,
-    idleTimeoutMillis: 60000,
+    idleTimeoutMillis: 300000,
     connectionTimeoutMillis: 5000,
+    keepAlive: true,
     ssl: { rejectUnauthorized: false },
   });
+
+  // Pre-warm connection in background
+  pool.query("SELECT 1").catch((e) => console.error("Pool warmup notice:", e.message));
+
   if (process.env.NODE_ENV !== "production") globalForPrisma.pool = pool;
   return pool;
 }

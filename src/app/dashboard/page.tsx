@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import Navbar from "@/components/Navbar";
@@ -13,7 +14,43 @@ import {
   Users,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+const getCachedDashboardData = unstable_cache(
+  async () => {
+    const [statsResult, recentTransactions] = await Promise.all([
+      prisma.$queryRaw<Array<{
+        total_items: number;
+        available_stock: number;
+        borrowed_stock: number;
+        total_transactions: number;
+      }>>`
+        SELECT 
+          (SELECT COUNT(*) FROM items)::int AS total_items,
+          (SELECT COALESCE(SUM(stock), 0) FROM items)::int AS available_stock,
+          (SELECT COALESCE(SUM(quantity), 0) FROM borrow_transactions WHERE status = 'DIPINJAM')::int AS borrowed_stock,
+          (SELECT COUNT(*) FROM borrow_transactions)::int AS total_transactions
+      `,
+      prisma.borrowTransaction.findMany({
+        take: 6,
+        orderBy: { createdAt: "desc" },
+        include: {
+          item: true,
+          recordedBy: { select: { name: true, username: true, role: true } },
+        },
+      }),
+    ]);
+
+    const stats = statsResult[0] || {
+      total_items: 0,
+      available_stock: 0,
+      borrowed_stock: 0,
+      total_transactions: 0,
+    };
+
+    return { stats, recentTransactions };
+  },
+  ["dashboard-data"],
+  { revalidate: 15, tags: ["dashboard-data"] }
+);
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -21,36 +58,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Fetch summary stats & recent transactions in parallel
-  const [statsResult, recentTransactions] = await Promise.all([
-    prisma.$queryRaw<Array<{
-      total_items: number;
-      available_stock: number;
-      borrowed_stock: number;
-      total_transactions: number;
-    }>>`
-      SELECT 
-        (SELECT COUNT(*) FROM items)::int AS total_items,
-        (SELECT COALESCE(SUM(stock), 0) FROM items)::int AS available_stock,
-        (SELECT COALESCE(SUM(quantity), 0) FROM borrow_transactions WHERE status = 'DIPINJAM')::int AS borrowed_stock,
-        (SELECT COUNT(*) FROM borrow_transactions)::int AS total_transactions
-    `,
-    prisma.borrowTransaction.findMany({
-      take: 6,
-      orderBy: { createdAt: "desc" },
-      include: {
-        item: true,
-        recordedBy: { select: { name: true, username: true, role: true } },
-      },
-    }),
-  ]);
-
-  const stats = statsResult[0] || {
-    total_items: 0,
-    available_stock: 0,
-    borrowed_stock: 0,
-    total_transactions: 0,
-  };
+  const { stats, recentTransactions } = await getCachedDashboardData();
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
